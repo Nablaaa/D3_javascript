@@ -16,3 +16,5 @@ Scripts for D3.js (Data Driven Documents) to present scientific data online. Bas
 - script 04 building svg files
 - consist of creating an environment and adding objects to it
 - if objects don't exist yet, just refer to them, add them with enter() and modify them afterward
+
+![scatterplot](scatter-plot.png)
