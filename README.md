@@ -38,7 +38,7 @@ Scripts for D3.js (Data Driven Documents) to present scientific data online. Bas
 
 ### Bug
 - at the moment it is not possible to load data from csv and set the dtype to numerical types
-
+- it seems that the data is not an array when loaded from csv (maybe formatting error)
 ## author
 ```
 Eric Schmidt
