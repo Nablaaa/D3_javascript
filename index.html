@@ -75,6 +75,24 @@
 			        });
 
 
+			barchart.selectAll("text")
+			    .data(dataset)
+			    .enter()
+			    .append("text")
+
+			    .attr("y",function(d){
+			        return h-h*(d/max_data) +15;
+			        })
+                .attr("x",function(d,i){
+			        return (i*(barwidth+5) + barwidth/2);
+			        })
+			    .text(function(d){return d})
+			    .style("fill","white")
+			    .attr("font-family","sans-serif")
+			    .attr("font-size",12)
+			    .attr("text-anchor","middle") ; // to align numbers with bar
+
+
 		</script>
 	</body>
 </html>
