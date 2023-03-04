@@ -1,0 +1,89 @@
+// start local browser with terminal
+// python -m http.server 8888 &.
+// for some reason the numerical data is still loaded as string
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>D3 Page Template title</title>
+        <script type="text/javascript" src="d3.js"></script>
+    </head>
+    <body>
+        <script type="text/javascript">
+            // Your beautiful D3 code will go here
+
+            // d3 code can be added after d3
+            d3.select("body")
+                .append("h1")
+                .text("This is my headline");
+            d3.select("body").append("p").text("here is new text in the body");
+
+            d3.select("body")
+                .append("p")
+                .text("now there comes data from a variable:");
+
+
+            // add a converter of datatypes which is necessary for loading csv files
+
+            var dataConverter = function(d) {
+                return{
+                    Food: d.Food,
+                    Tasty: parseBool(d.Tasty),
+                    Score: parseFloat(d.Score),
+                    };
+                }
+
+
+            // load the data and make sure that there is no error during loading
+
+            var dataset;
+            d3.csv("food_data.csv", dataConverter, function(error, data){
+                if (error) {
+                    console.log(error);
+                    }
+                else {
+                    console.log(data);
+
+                    dataset = data;
+                    //generateVis();
+                    //hideLoadingMsg();
+                    }
+
+                });
+
+            // create a new dataset with 5 entries
+            var dataset = [5,10,15,20,25];
+
+            // now i can work with the dataset
+            // for example I can bind the data to a paragraph
+            // in this case i bind it to len(dataset) paragraphs
+            // which are 2 exisiting paragraphs and 3 new ones
+            // which I ENTER to the website and which have the name
+            // of the data itself
+            d3.select("body")
+                .selectAll("p")
+                .data(dataset)
+                .enter()
+                .append("p")
+                .text(function(d) {return "this is entry " + d; }) // calling "d" as data is only
+                                                 // possible because we call
+                                                 // .data()  in the chain
+
+                .style("color",function(d) {
+                    if (d<26){
+                        return d3.rgb(9*d,5*d,d);
+                        }
+                    else{
+                        return d3.rgb(255,255,0);
+                        }
+
+                    });
+
+        </script>
+
+        <h1> headline </h1>
+        <p> here is text </p>
+        <p> test </p>
+
+    </body>
+</html>
