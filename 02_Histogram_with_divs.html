@@ -1,0 +1,51 @@
+// start local browser with terminal
+// python -m http.server 8888 &.
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+		<meta charset="utf-8">
+		<title>D3: Drawing divs with data</title>
+		<script type="text/javascript" src="../d3.js"></script>
+		<style type="text/css">
+
+			div.bar {
+				display: inline-block;
+				width: 20px;
+				height: 75px;
+				background-color: teal;
+				margin-right: 2px
+			}
+
+		</style>
+	</head>
+    <body>
+        <script type="text/javascript">
+            d3.select("body").append("h1")
+                .text("Plot data")
+
+            // random data
+            var dataset = []
+            for (var i = 0; i<25;i++){
+                var newNumber = Math.random()*30;
+                dataset.push(newNumber); // append new number
+                }
+
+            // now plot them as a bar chart
+            d3.select("body")
+                .selectAll("div") // choose a div as container
+                .data(dataset)
+                .enter()
+                .append("div")
+                .attr("class","bar") // connect the data with the
+                                     // bar class
+                 .style("height", function(d){
+                    return 5* d + "px";
+                    });   // make changes in the style of the div
+                          // bar so that the height corresponds to
+                          // the value
+
+        </script>
+
+    </body>
+</html>
