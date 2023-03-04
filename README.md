@@ -19,6 +19,26 @@ Scripts for D3.js (Data Driven Documents) to present scientific data online. Bas
 
 ![scatterplot](data/scatter-plot.png)
 
+### Scale Method
+- script 05
+- scale a domain input to an output range (e.g. scale timeseries from 0s to 1200 s to a range of 0 to 100 px, if the window is only 100 px wide)
+- additionally there are the methods:
+  - nice() for rounding values
+  - rangeRound() 
+  - clamp() to never exceed the range when exceeding the domain
+- there are different scale methods
+  - scaleLinear used here
+  - scaleTime used here
+  - scaleSqrt
+  - scalePow
+  - scaleLog
+  - scaleQuantize with discrete input
+  - scaleOrdinal for non quantitative values
+  - more
+
+### Bug
+- at the moment it is not possible to load data from csv and set the dtype to numerical types
+
 ## author
 ```
 Eric Schmidt
