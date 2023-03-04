@@ -9,3 +9,9 @@ Scripts for D3.js (Data Driven Documents) to present scientific data online. Bas
 ### Bar chart via "div" and css via modified rectangles
 - script 02
 - strange way to plot something, because I basically create just different sized rectangles in a "division" ("div")
+
+### SVG files
+- script 03 importing svg files
+- script 04 building svg files
+- consist of creating an environment and adding objects to it
+- if objects don't exist yet, just refer to them, add them with enter() and modify them afterward

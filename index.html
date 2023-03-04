@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>D3: Creating an empty SVG</title>
+		<script type="text/javascript" src="../d3.js"></script>
+		<style type="text/css">
+			/* No style rules here yet */
+		</style>
+	</head>
+	<body>
+		<script type="text/javascript">
+			var w = 600;
+			var h = 200;
+
+			//Create SVG element
+			var svg = d3.select("body")
+						.append("svg")
+						.attr("width", w)
+						.attr("height", h);
+
+
+			var dataset = []
+			for (var i =0; i<12; i++){
+			    dataset.push(i);
+			    }
+
+
+			var circles = svg.selectAll("circle")  // references to all circles
+			                                       // (even if they dont exist yet)
+			    .data(dataset)
+			    .enter()
+			    .append("circle");
+
+            // circles are now crated but not displayed since they have no
+            // properties yet
+            // add properties:
+            circles.attr("cx", function(d){
+                return (d*50) + 25;
+                })
+            .attr("cy", h/2)
+            .attr("r", function(d){
+                return 0.2 * d * d;
+                })
+            .style("fill",function(d){
+                return d3.rgb(20*d,10*d,d);
+                });
+
+
+
+
+            // now create svg bar charts
+            var barchart = d3.select("body")
+						.append("svg")
+						.attr("width", w)
+						.attr("height", h);
+
+
+            var barwidth = w/dataset.length -5
+            var max_data = 12
+
+			barchart.selectAll("rect")
+			    .data(dataset)
+			    .enter()
+			    .append("rect")
+			    .attr("width",barwidth) // give arbitrary width and height and modify afterward
+			    .attr("height",function(d){
+			        return h*(d/max_data);
+			        })
+			    .attr("y",function(d){
+			        return h-h*(d/max_data);
+			        })
+                .attr("x",function(d,i){
+			        return i*(barwidth+5);
+			        });
+
+
+		</script>
+	</body>
+</html>
