@@ -36,18 +36,22 @@
 
             // load the data and make sure that there is no error during loading
 
-            var dataset;
-            d3.csv("data/food_data.csv", dataConverter, function(error, data){
-                if (error) {
-                    console.log(error);
-                    }
-                else {
-                    console.log(data);
+            var data;
+            d3.csv("data/food_data.csv", function(data){
 
-                    dataset = data;
-                    //generateVis();
-                    //hideLoadingMsg();
+                if (!Array.isArray(data)){
+                    console.error("no array");
+                    return;
                     }
+
+                data = data.map(function(d) {
+                    return {
+                        Food: d.Food,
+                        Tasty: d.Tasty,
+                        Score: +d.Score
+                        };
+                    });
+                console.log(data);
 
                 });
 
