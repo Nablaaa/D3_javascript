@@ -1,4 +1,4 @@
-![titlepicture](example_svg_file.svg)
+![titlepicture](data/example_svg_file.svg)
 # D3_javascript
 
 Scripts for D3.js (Data Driven Documents) to present scientific data online. Based on the book [Interactive Data Visualization for the Web](https://www.oreilly.com/library/view/interactive-data-visualization/9781449340223/)
@@ -17,7 +17,7 @@ Scripts for D3.js (Data Driven Documents) to present scientific data online. Bas
 - consist of creating an environment and adding objects to it
 - if objects don't exist yet, just refer to them, add them with enter() and modify them afterward
 
-![scatterplot](scatter-plot.png)
+![scatterplot](data/scatter-plot.png)
 
 ## author
 ```
