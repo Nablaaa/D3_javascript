@@ -22,6 +22,7 @@ Scripts for D3.js (Data Driven Documents) to present scientific data online. Bas
 ### Scale Method
 - script 05
 - scale a domain input to an output range (e.g. scale timeseries from 0s to 1200 s to a range of 0 to 100 px, if the window is only 100 px wide)
+- add axis to the scatterplot and add ticks based on xScale and yScale
 - additionally there are the methods:
   - nice() for rounding values
   - rangeRound() 
