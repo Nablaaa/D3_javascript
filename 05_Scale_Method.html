@@ -5,8 +5,20 @@
 		<title>D3: Creating an empty SVG</title>
 		<script type="text/javascript" src="../d3.js"></script>
 		<style type="text/css">
-			/* No style rules here yet */
+			.axis path,
+			.axis line {
+				stroke: maroon;
+				shape-rendering: crispEdges;
+				}
+			.axis text {
+				font-family: Optima, Futura, sans-serif;
+				font-weight: bold;
+				font-size: 14px;
+				fill: maroon;
+				{
 		</style>
+
+
 	</head>
 	<body>
 		<script type="text/javascript">
@@ -37,15 +49,15 @@
                 var y = Math.random()*10;
                 points.push([x, y]); // append new position
                 }
-            points.push([35, 12]);
+            //points.push([35, 12]);
 
             var xScale = d3.scaleLinear()
                             .domain([0, d3.max(points,function(d) { return d[0] } ) ] )
-                            .range([radius,w-radius])
+                            .range([4*radius,w-4*radius])
 
             var yScale = d3.scaleLinear()
                             .domain([0, d3.max(points,function(d) { return d[1] } ) ] )
-                            .range([radius,h-radius])
+                            .range([h-4*radius,4*radius])
 
 
 
@@ -74,6 +86,41 @@
 			    	}
 			    	});
 
+			// add axis
+			var xAxis = d3.axisBottom()
+							.scale(xScale)
+							.ticks(6);
+
+			var yAxis = d3.axisLeft()
+							.scale(yScale)
+							.ticks(6);
+
+
+			scatterplot.append("g")   // add a new SVG  group
+				.attr("class","axis") // add them to a class, so that they are
+									  // easy to modify with css (in the head)
+				.call(xAxis)
+				.attr("transform", "translate(0,"  + (h-4*radius) +  ")"); // shift axis to bottom
+
+			scatterplot.append("g")   // add a new SVG  group
+				.attr("class","axis") // add them to a class, so that they are
+									  // easy to modify with css (in the head)
+				.call(yAxis)
+				.attr("transform", "translate(" + (4*radius) +  ",0)"); // shift axis to bottom
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 			d3.select("body").append("h3")
@@ -87,7 +134,6 @@
                     Amount: +d.Amount,
                     };
                 }
-
 
             // load the data and make sure that there is no error during loading
 /*
