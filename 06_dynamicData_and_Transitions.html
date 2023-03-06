@@ -21,6 +21,7 @@
 
 			var nbars = 25
 			var value = 30
+			var transitionduration = 1000;
 
 			var dataset = [];
 
@@ -101,6 +102,7 @@
 					svg.selectAll("rect")
 					   .data(dataset)
 					   .transition() // <-- This makes it a smooth transition!
+					   .duration(transitionduration)
 					   .attr("y", function(d) {
 					   		return h - yScale(d);
 					   })
@@ -114,6 +116,8 @@
 					//Update all labels
 					svg.selectAll("text")
 					   .data(dataset)
+					   .transition()
+					   .duration(1.2*transitionduration)
 					   .text(function(d) {
 					   		return d;
 					   })
