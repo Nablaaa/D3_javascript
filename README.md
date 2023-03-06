@@ -37,6 +37,12 @@ Scripts for D3.js (Data Driven Documents) to present scientific data online. Bas
   - scaleOrdinal for non quantitative values
   - more
 
+### Transition between visualizations
+- script 06
+- update data in a smooth way by using transitions
+
+
+
 ### Bug
 - at the moment it is not possible to load data from csv and set the dtype to numerical types
 - it seems that the data is not an array when loaded from csv (maybe formatting error)
