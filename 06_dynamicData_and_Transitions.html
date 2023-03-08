@@ -5,23 +5,44 @@
 		<title>D3: A bar chart that transitions to new data!</title>
 		<script type="text/javascript" src="../d3.js"></script>
 		<style type="text/css">
-			/* No style rules here yet */		
+			h1 {
+				font-family: Optima, Futura, sans-serif;
+				font-weight: bold;
+				color: rgb(220,110,11);
+				{
 		</style>
 	</head>
 	<body>
 
 
-		<h3>Click on this text to update the chart with new data values.</h3>
-			
+
 		<script type="text/javascript">
 
 			//Width and height
 			var w = 600;
 			var h = 250;
 
+			d3.select("body").append("h1")
+				.text("Transitions in Data");
+
+			d3.select("body").append("h3")
+				.text("Histogram");
+
+			d3.select("body").append("h5")
+				.text("Click on this text to generate new data")
+				.attr("class","update_histogram");
+
+
+
 			var nbars = 25
 			var value = 50
 			var transitionduration = 1000;
+
+
+			var scatter_x = 50;
+			var scatter_y = 10;
+			var radius = 5;
+			var scatter_points = 500;
 
 			var dataset = [];
 
@@ -100,7 +121,7 @@
 
 
 			//On click, update with new data
-			d3.select("h3")
+			d3.select(".update_histogram")
 				.on("click", function() {
 
 					//New values for dataset
@@ -111,14 +132,9 @@
 					}
 
 
-					var xScale = d3.scaleBand() // ordinale scale
-									.domain(d3.range(dataset.length)) // domain [0,1,2,3,...]
-									.rangeRound([0, w])
-									.paddingInner(0.05); // add 5 % spaces between bars
+					xScale.domain(d3.range(dataset.length)); // add 5 % spaces between bars
 
-					var yScale = d3.scaleLinear()
-									.domain([0, d3.max(dataset)])
-									.range([0, h]);
+					yScale.domain([0, d3.max(dataset)]);
 
 
 
@@ -170,7 +186,167 @@
 					   				
 				});
 
-			
+
+
+
+			d3.select("body").append("h3")
+				.text("Scatterplot");
+
+			d3.select("body").append("h5")
+				.text("Click on this text to generate new data")
+				.attr("class","update_scatterplot");
+
+
+
+
+            var points = []
+			for (var i=0; i<scatter_points; i++){
+                var x = Math.random()*scatter_x;
+                var y = Math.random()*scatter_y;
+                points.push([x, y]); // append new position
+                }
+
+
+			// introduce the variable again, this time as linear scale and not BAND
+			var xScale_scatter = d3.scaleLinear()
+					.domain([0, d3.max(points,function(d) { return d[0] } ) ] )
+					.range([4*radius,w-4*radius])
+
+
+			var yScale_scatter = d3.scaleLinear()
+					.domain([0, d3.max(points,function(d) { return d[1] } ) ] )
+					.range([h-4*radius,4*radius])
+
+
+			var scatterplot = d3.select("body")
+						.append("svg")
+						.attr("width", w)
+						.attr("height", h);
+
+			scatterplot.selectAll("circle")
+			    .data(points)
+			    .enter()
+			    .append("circle")
+			    .attr("cx",function(d){
+			    	return xScale_scatter(d[0]);
+                    })
+			    .attr("cy",function(d){
+			    	return yScale_scatter(d[1]);
+			    	})
+			    .attr("r",function(d){
+			    	return Math.random()*radius;
+			    	})
+			    .style("fill",function(d){
+
+			    	if (d[0]>scatter_x){
+			    	return d3.rgb(0,0,0);
+			    	}
+
+			    	else{
+			    	return d3.rgb((d[0]/scatter_x *255),d[1]/scatter_y*255,(d[0]/scatter_x+d[1]/scatter_y)*127);
+			    	}
+			    	});
+
+			// add axis
+			var xAxis = d3.axisBottom()
+							.scale(xScale_scatter)
+							.ticks(6);
+
+			var yAxis = d3.axisLeft()
+							.scale(yScale_scatter)
+							.ticks(6);
+
+
+			scatterplot.append("g")   // add a new SVG  group
+				.attr("class","x_axis") // add them to a class, so that they are
+									  // easy to modify with css (in the head)
+				.call(xAxis)
+				.attr("transform", "translate(0,"  + (h-4*radius) +  ")"); // shift axis to bottom
+
+			scatterplot.append("g")   // add a new SVG  group
+				.attr("class","y_axis") // add them to a class, so that they are
+									  // easy to modify with css (in the head)
+				.call(yAxis)
+				.attr("transform", "translate(" + (4*radius) +  ",0)"); // shift axis to bottom
+
+
+
+
+
+
+			//On click, update with new data
+			d3.select(".update_scatterplot")
+				.on("click", function() {
+
+					//New values for dataset
+
+					var random_stretching = 10*Math.random()
+
+					var points = []
+					for (var i=0; i<scatter_points; i++){
+						var x = Math.random()*scatter_x *random_stretching;
+						var y = Math.random()*scatter_y*random_stretching;
+						points.push([x, y]); // append new position
+						}
+
+					xScale_scatter.domain([0, d3.max(points,function(d) { return d[0] } ) ] )
+                            .range([4*radius,w-4*radius])
+
+					yScale_scatter.domain([0, d3.max(points,function(d) { return d[1] } ) ] )
+						.range([h-4*radius,4*radius])
+
+
+					//Update all rects
+					scatterplot.selectAll("circle")
+					   .data(points)
+					   .transition() // <-- This makes it a smooth transition!
+					   .duration(transitionduration)
+					   .attr("cx",function(d){
+							return xScale_scatter(d[0]);
+							})
+						.attr("cy",function(d){
+							return yScale_scatter(d[1]);
+							})
+						.attr("r",function(d){
+							return Math.random()*radius;
+							})
+						.style("fill",function(d){
+
+							if (d[0]>scatter_x*random_stretching){
+							return d3.rgb(0,0,0);
+							}
+
+							else{
+							return d3.rgb((d[0]/(scatter_x*random_stretching) *255),d[1]/(scatter_y*random_stretching)*255,(d[0]/(scatter_x*random_stretching)+d[1]/(scatter_y*random_stretching))*127);
+							}
+							});
+
+
+					xAxis.scale(xScale_scatter);
+
+					yAxis.scale(yScale_scatter);
+
+
+					scatterplot.select(".x_axis")
+							.transition()
+							.duration(transitionduration)
+							.call(xAxis);
+
+
+					scatterplot.select(".y_axis")
+							.transition()
+							.duration(transitionduration)
+							.call(yAxis);
+
+
+				});
+
+
+
+
+
+
+
 		</script>
 	</body>
 </html>
