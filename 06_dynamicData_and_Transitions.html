@@ -9,7 +9,34 @@
 				font-family: Optima, Futura, sans-serif;
 				font-weight: bold;
 				color: rgb(220,110,11);
-				{
+				}
+
+			.x_axis path,
+			.x_axis line {
+				stroke: maroon;
+				shape-rendering: crispEdges;
+				}
+			.x_axis text {
+				font-family: Optima, Futura, sans-serif;
+				font-weight: bold;
+				font-size: 14px;
+				fill: maroon;
+				}
+
+			.y_axis path,
+			.y_axis line {
+				stroke: maroon;
+				shape-rendering: crispEdges;
+				}
+			.y_axis text {
+				font-family: Optima, Futura, sans-serif;
+				font-weight: bold;
+				font-size: 14px;
+				fill: maroon;
+				}
+
+
+
 		</style>
 	</head>
 	<body>
@@ -43,6 +70,7 @@
 			var scatter_y = 10;
 			var radius = 5;
 			var scatter_points = 500;
+			var dist_for_scatter_label = 6; // as multiple of the radius
 
 			var dataset = [];
 
@@ -207,15 +235,17 @@
                 }
 
 
+
+
 			// introduce the variable again, this time as linear scale and not BAND
 			var xScale_scatter = d3.scaleLinear()
 					.domain([0, d3.max(points,function(d) { return d[0] } ) ] )
-					.range([4*radius,w-4*radius])
+					.range([dist_for_scatter_label*radius,w-dist_for_scatter_label*radius])
 
 
 			var yScale_scatter = d3.scaleLinear()
 					.domain([0, d3.max(points,function(d) { return d[1] } ) ] )
-					.range([h-4*radius,4*radius])
+					.range([h-dist_for_scatter_label*radius,dist_for_scatter_label*radius])
 
 
 			var scatterplot = d3.select("body")
@@ -261,13 +291,13 @@
 				.attr("class","x_axis") // add them to a class, so that they are
 									  // easy to modify with css (in the head)
 				.call(xAxis)
-				.attr("transform", "translate(0,"  + (h-4*radius) +  ")"); // shift axis to bottom
+				.attr("transform", "translate(0,"  + (h-dist_for_scatter_label*radius) +  ")"); // shift axis to bottom
 
 			scatterplot.append("g")   // add a new SVG  group
 				.attr("class","y_axis") // add them to a class, so that they are
 									  // easy to modify with css (in the head)
 				.call(yAxis)
-				.attr("transform", "translate(" + (4*radius) +  ",0)"); // shift axis to bottom
+				.attr("transform", "translate(" + (dist_for_scatter_label*radius) +  ",0)"); // shift axis to bottom
 
 
 
@@ -290,10 +320,10 @@
 						}
 
 					xScale_scatter.domain([0, d3.max(points,function(d) { return d[0] } ) ] )
-                            .range([4*radius,w-4*radius])
+                            .range([dist_for_scatter_label*radius,w-dist_for_scatter_label*radius])
 
 					yScale_scatter.domain([0, d3.max(points,function(d) { return d[1] } ) ] )
-						.range([h-4*radius,4*radius])
+						.range([h-dist_for_scatter_label*radius,dist_for_scatter_label*radius])
 
 
 					//Update all rects
