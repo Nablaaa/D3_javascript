@@ -20,7 +20,7 @@
 			var h = 250;
 
 			var nbars = 25
-			var value = 30
+			var value = 50
 			var transitionduration = 1000;
 
 			var dataset = [];
@@ -62,7 +62,7 @@
 			   		return yScale(d);
 			   })
 			   .attr("fill", function(d) {
-					return "rgb(" + Math.round(d * 4) +  ",0, 0)";
+					return "rgb(" + Math.round(d/value*255) +  ",0, 0)";
 			   });
 
 			//Create labels
@@ -78,12 +78,24 @@
 			   		return xScale(i) + xScale.bandwidth() / 2;
 			   })
 			   .attr("y", function(d) {
-			   		return h - yScale(d) + 14;
+			   		if (yScale(d) < 0.1*h){
+			   			return h - yScale(d) - 7;
+			   			}
+			   		else{
+			   			return h - yScale(d) + 14;
+			   			}
 			   })
 			   .attr("font-family", "sans-serif")
 			   .attr("font-size", "14px")
-			   .attr("fill", "white");
+			   .attr("fill", function(d){
+					if (yScale(d) < 0.1*h){
+			   			return "black";
+			   			}
+			   		else{
+			   			return "white";
+			   			}
 
+					});
 
 
 
@@ -98,6 +110,18 @@
 						dataset.push(y); // append new position
 					}
 
+
+					var xScale = d3.scaleBand() // ordinale scale
+									.domain(d3.range(dataset.length)) // domain [0,1,2,3,...]
+									.rangeRound([0, w])
+									.paddingInner(0.05); // add 5 % spaces between bars
+
+					var yScale = d3.scaleLinear()
+									.domain([0, d3.max(dataset)])
+									.range([0, h]);
+
+
+
 					//Update all rects
 					svg.selectAll("rect")
 					   .data(dataset)
@@ -110,7 +134,7 @@
 					   		return yScale(d);
 					   })
 					   .attr("fill", function(d) {
-							return "rgb(" + Math.round(d * 4) + ",0, 0)";
+							return "rgb(" + Math.round(d/value*255) +  ",0, 0)";
 					   });
 
 					//Update all labels
@@ -125,8 +149,24 @@
 					   		return xScale(i) + xScale.bandwidth() / 2;
 					   })
 					   .attr("y", function(d) {
-					   		return h - yScale(d) + 10;
-					   });
+							if (yScale(d) < 0.1*h){
+								return h - yScale(d) - 7;
+								}
+							else{
+								return h - yScale(d) + 14;
+								}
+						   })
+					   .attr("font-family", "sans-serif")
+					   .attr("font-size", "14px")
+					   .attr("fill", function(d){
+							if (yScale(d) < 0.1*h){
+								return "black";
+								}
+							else{
+								return "white";
+								}
+
+			   			});
 					   				
 				});
 
