@@ -352,16 +352,11 @@
 							});
 
 
-					xAxis.scale(xScale_scatter);
-
-					yAxis.scale(yScale_scatter);
-
-
+					// make transition of axis (they update automatically with Scale)
 					scatterplot.select(".x_axis")
 							.transition()
 							.duration(transitionduration)
 							.call(xAxis);
-
 
 					scatterplot.select(".y_axis")
 							.transition()
