@@ -40,7 +40,9 @@ Scripts for D3.js (Data Driven Documents) to present scientific data online. Bas
 ### Transition between visualizations
 - script 06
 - update data in a smooth way by using transitions
-
+- update by using a "click function" which is connected to a "heading" class
+- applied to histogram (rectangles) and scatterplot (axis and circles)
+- 
 
 
 ### Bug
