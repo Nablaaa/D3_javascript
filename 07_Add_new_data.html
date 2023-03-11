@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>D3: A bar chart that transitions to new data!</title>
+		<script type="text/javascript" src="../d3.js"></script>
+		<style type="text/css">
+			h1 {
+				font-family: Optima, Futura, sans-serif;
+				font-weight: bold;
+				color: rgb(220,110,11);
+				}
+
+			.x_axis path,
+			.x_axis line {
+				stroke: maroon;
+				shape-rendering: crispEdges;
+				}
+			.x_axis text {
+				font-family: Optima, Futura, sans-serif;
+				font-weight: bold;
+				font-size: 14px;
+				fill: maroon;
+				}
+
+			.y_axis path,
+			.y_axis line {
+				stroke: maroon;
+				shape-rendering: crispEdges;
+				}
+			.y_axis text {
+				font-family: Optima, Futura, sans-serif;
+				font-weight: bold;
+				font-size: 14px;
+				fill: maroon;
+				}
+
+
+
+		</style>
+	</head>
+	<body>
+
+
+
+		<script type="text/javascript">
+
+			//Width and height
+			var w = 600;
+			var h = 250;
+
+			d3.select("body").append("h1")
+				.text("Transitions in Data");
+
+			d3.select("body").append("h3")
+				.text("Histogram");
+
+			d3.select("body").append("h5")
+				.text("Click on this text to add new data")
+				.attr("class","update_histogram");
+
+
+
+			var nbars = 25
+			var value = 50
+			var transitionduration = 1000;
+
+
+			var scatter_x = 50;
+			var scatter_y = 10;
+			var radius = 5;
+			var scatter_points = 500;
+			var dist_for_scatter_label = 6; // as multiple of the radius
+
+			var dataset = [];
+
+			for (var i=0; i<nbars; i++){
+                var y = Math.round(Math.random()*value);
+                dataset.push(y); // append new position
+                }
+
+
+			var xScale = d3.scaleBand() // ordinale scale
+							.domain(d3.range(dataset.length)) // domain [0,1,2,3,...]
+							.rangeRound([0, w])
+							.paddingInner(0.05); // add 5 % spaces between bars
+
+			var yScale = d3.scaleLinear()
+							.domain([0, d3.max(dataset)])
+							.range([0, h]);
+
+			//Create SVG element
+			var svg = d3.select("body")
+						.append("svg")
+						.attr("width", w)
+						.attr("height", h);
+
+			//Create bars
+			svg.selectAll("rect")
+			   .data(dataset)
+			   .enter()
+			   .append("rect")
+			   .attr("x", function(d, i) {
+			   		return xScale(i);
+			   })
+			   .attr("y", function(d) {
+			   		return h - yScale(d);
+			   })
+			   .attr("width", xScale.bandwidth()) // this is the width of a bar including padding
+			   .attr("height", function(d) {
+			   		return yScale(d);
+			   })
+			   .attr("fill", function(d) {
+					return "rgb(" + Math.round(d/value*255) +  ",0, 0)";
+			   });
+
+			//Create labels
+			svg.selectAll("text")
+			   .data(dataset)
+			   .enter()
+			   .append("text")
+			   .text(function(d) {
+			   		return d;
+			   })
+			   .attr("text-anchor", "middle")
+			   .attr("x", function(d, i) {
+			   		return xScale(i) + xScale.bandwidth() / 2;
+			   })
+			   .attr("y", function(d) {
+			   		if (yScale(d) < 0.1*h){
+			   			return h - yScale(d) - 7;
+			   			}
+			   		else{
+			   			return h - yScale(d) + 14;
+			   			}
+			   })
+			   .attr("font-family", "sans-serif")
+			   .attr("font-size", "14px")
+			   .attr("fill", function(d){
+					if (yScale(d) < 0.1*h){
+			   			return "black";
+			   			}
+			   		else{
+			   			return "white";
+			   			}
+
+					});
+
+
+
+			//On click, update with new data
+			d3.select(".update_histogram")
+				.on("click", function() {
+
+					//append data
+					var newData = Math.random()*2*value;
+					dataset.push(Math.round(newData)); // append new data
+
+					// update scales
+					xScale.domain(d3.range(dataset.length));
+					yScale.domain([0, d3.max(dataset)]);
+
+					// in the next steps, I have to:
+					// SELECT all existing bars
+					// ENTER a new entry/bar to the website
+					// MERGE the new object with the selection
+
+
+					// SELECT
+					var bars = svg.selectAll("rect")
+									.data(dataset);
+
+					// ENTER to this object
+					bars.enter()
+						.append("rect")
+						.attr("x", w) // let it enter on the very
+									  // right of the screen
+						.attr("y", function(d) {
+							return h - yScale(d);
+						})
+						.attr("width", xScale.bandwidth()) // this is the width of a bar including padding
+						.attr("height", function(d) {
+							return yScale(d);
+						})
+						.attr("fill", function(d) {
+							return "rgb(" + Math.round(d/(2*value)*255) +  ",0, 0)";
+						})
+
+					// MERGE
+						.merge(bars)
+						.transition()
+						.duration(0.3*transitionduration)
+						// now let it move from the very right to the scaled position
+						.attr("x", function(d,i){
+							return xScale(i);
+							})
+						.attr("y", function(d) {				//Set new y position, based on the updated yScale
+							return h - yScale(d);
+						})
+						.attr("width", xScale.bandwidth())		//Set new width value, based on the updated xScale
+						.attr("height", function(d) {			//Set new height value, based on the updated yScale
+							return yScale(d);
+						})
+						.attr("fill", function(d) {
+							return "rgb(" + Math.round(d/(2*value)*255) +  ",0, 0)";
+						});
+
+
+
+
+
+
+
+
+					//Update all labels
+					var labels = svg.selectAll("text")
+					   				.data(dataset);
+
+					labels.enter()
+						.append("text")
+						.text(function(d) {
+							return d;
+					   	})
+						.attr("x",w)
+						.attr("y", function(d) {
+							if (yScale(d) < 0.1*h){
+								return h - yScale(d) - 7;
+								}
+							else{
+								return h - yScale(d) + 14;
+								}
+						   })
+						.attr("font-family", "sans-serif")
+						.attr("font-size", "14px")
+						.attr("fill", function(d){
+							if (yScale(d) < 0.1*h){
+								return "black";
+								}
+							else{
+								return "white";
+								}
+
+						})
+						// MERGE
+						.merge(labels)
+						.transition()
+						.duration(0.3*transitionduration)
+						// now let it move from the very right to the scaled position
+					   	.attr("text-anchor", "middle")
+						.attr("x", function(d, i) {
+							return xScale(i) + xScale.bandwidth() / 2;
+					   		})
+						.attr("y",h/2)
+						.attr("y", function(d) {
+							if (yScale(d) < 0.1*h){
+								return h - yScale(d) - 7;
+								}
+							else{
+								return h - yScale(d) + 14;
+								}
+						   })
+						.attr("font-family", "sans-serif")
+						.attr("font-size", "14px")
+						.attr("fill", function(d){
+							if (yScale(d) < 0.1*h){
+								return "black";
+								}
+							else{
+								return "white";
+								}
+
+						});
+
+
+				});
+
+
+
+
+			d3.select("body").append("h3")
+				.text("Scatterplot");
+
+			d3.select("body").append("h5")
+				.text("Click on this text to generate new data")
+				.attr("class","update_scatterplot");
+
+
+
+
+            var points = []
+			for (var i=0; i<scatter_points; i++){
+                var x = Math.random()*scatter_x;
+                var y = Math.random()*scatter_y;
+                points.push([x, y]); // append new position
+                }
+
+
+
+
+			// introduce the variable again, this time as linear scale and not BAND
+			var xScale_scatter = d3.scaleLinear()
+					.domain([0, d3.max(points,function(d) { return d[0] } ) ] )
+					.range([dist_for_scatter_label*radius,w-dist_for_scatter_label*radius])
+
+
+			var yScale_scatter = d3.scaleLinear()
+					.domain([0, d3.max(points,function(d) { return d[1] } ) ] )
+					.range([h-dist_for_scatter_label*radius,dist_for_scatter_label*radius])
+
+
+			var scatterplot = d3.select("body")
+						.append("svg")
+						.attr("width", w)
+						.attr("height", h);
+
+			scatterplot.selectAll("circle")
+			    .data(points)
+			    .enter()
+			    .append("circle")
+			    .attr("cx",function(d){
+			    	return xScale_scatter(d[0]);
+                    })
+			    .attr("cy",function(d){
+			    	return yScale_scatter(d[1]);
+			    	})
+			    .attr("r",function(d){
+			    	return Math.random()*radius;
+			    	})
+			    .style("fill",function(d){
+
+			    	if (d[0]>scatter_x){
+			    	return d3.rgb(0,0,0);
+			    	}
+
+			    	else{
+			    	return d3.rgb((d[0]/scatter_x *255),d[1]/scatter_y*255,(d[0]/scatter_x+d[1]/scatter_y)*127);
+			    	}
+			    	});
+
+			// add axis
+			var xAxis = d3.axisBottom()
+							.scale(xScale_scatter)
+							.ticks(6);
+
+			var yAxis = d3.axisLeft()
+							.scale(yScale_scatter)
+							.ticks(6);
+
+
+			scatterplot.append("g")   // add a new SVG  group
+				.attr("class","x_axis") // add them to a class, so that they are
+									  // easy to modify with css (in the head)
+				.call(xAxis)
+				.attr("transform", "translate(0,"  + (h-dist_for_scatter_label*radius) +  ")"); // shift axis to bottom
+
+			scatterplot.append("g")   // add a new SVG  group
+				.attr("class","y_axis") // add them to a class, so that they are
+									  // easy to modify with css (in the head)
+				.call(yAxis)
+				.attr("transform", "translate(" + (dist_for_scatter_label*radius) +  ",0)"); // shift axis to bottom
+
+
+
+
+
+
+			//On click, update with new data
+			d3.select(".update_scatterplot")
+				.on("click", function() {
+
+					//New values for dataset
+
+					var random_stretching = 10*Math.random()
+
+					var points = []
+					for (var i=0; i<scatter_points; i++){
+						var x = Math.random()*scatter_x *random_stretching;
+						var y = Math.random()*scatter_y*random_stretching;
+						points.push([x, y]); // append new position
+						}
+
+					xScale_scatter.domain([0, d3.max(points,function(d) { return d[0] } ) ] )
+                            .range([dist_for_scatter_label*radius,w-dist_for_scatter_label*radius])
+
+					yScale_scatter.domain([0, d3.max(points,function(d) { return d[1] } ) ] )
+						.range([h-dist_for_scatter_label*radius,dist_for_scatter_label*radius])
+
+
+					//Update all rects
+					scatterplot.selectAll("circle")
+					   .data(points)
+					   .transition() // <-- This makes it a smooth transition!
+					   .duration(transitionduration)
+					   .attr("cx",function(d){
+							return xScale_scatter(d[0]);
+							})
+						.attr("cy",function(d){
+							return yScale_scatter(d[1]);
+							})
+						.attr("r",function(d){
+							return Math.random()*radius;
+							})
+						.style("fill",function(d){
+
+							if (d[0]>scatter_x*random_stretching){
+							return d3.rgb(0,0,0);
+							}
+
+							else{
+							return d3.rgb((d[0]/(scatter_x*random_stretching) *255),d[1]/(scatter_y*random_stretching)*255,(d[0]/(scatter_x*random_stretching)+d[1]/(scatter_y*random_stretching))*127);
+							}
+							});
+
+
+					// make transition of axis (they update automatically with Scale)
+					scatterplot.select(".x_axis")
+							.transition()
+							.duration(transitionduration)
+							.call(xAxis);
+
+					scatterplot.select(".y_axis")
+							.transition()
+							.duration(transitionduration)
+							.call(yAxis);
+
+
+				});
+
+
+
+
+
+
+
+		</script>
+	</body>
+</html>
