@@ -42,7 +42,20 @@ Scripts for D3.js (Data Driven Documents) to present scientific data online. Bas
 - update data in a smooth way by using transitions
 - update by using a "click function" which is connected to a "heading" class
 - applied to histogram (rectangles) and scatterplot (axis and circles)
-- 
+
+### Enter new data to the dataset
+- script 07
+- adding new data means: take existing data, append it, add a placeholder (ENTER, .data()), give the placeholder properties (.attr), merge the new data with the old one
+- adding new data consist of: 
+  - SELECT the object that should be appended
+  - ENTER the new data (by binding it to not existing objects)
+  - create these objects
+  - MERGE the new data to the selected object
+  - update their attributes
+  - optional: make a Transistion, in this case:
+    - initialize the entered data somewhere that is not the final position
+    - update the position of the complete dataset (because transitions can only be made on exisiting objects)
+  
 
 
 ### Bug
