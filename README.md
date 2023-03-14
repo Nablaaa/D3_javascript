@@ -46,16 +46,23 @@ Scripts for D3.js (Data Driven Documents) to present scientific data online. Bas
 ### Enter new data to the dataset
 - script 07
 - adding new data means: take existing data, append it, add a placeholder (ENTER, .data()), give the placeholder properties (.attr), merge the new data with the old one
-- adding new data consist of: 
+- adding new data consist of:
   - SELECT the object that should be appended
   - ENTER the new data (by binding it to not existing objects)
   - create these objects
   - MERGE the new data to the selected object
   - update their attributes
-  - optional: make a Transistion, in this case:
+  - optional: make a transition, in this case:
     - initialize the entered data somewhere that is not the final position
     - update the position of the complete dataset (because transitions can only be made on exisiting objects)
-  
+
+### Working with key functions
+- script 08
+- using key-value connections allows it to bind data to a key and make transitions based on keys
+  - gives more flexibility
+  - makes it easier to add/remove objects
+    - see script 09
+
 
 
 ### Bug
