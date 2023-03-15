@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>D3: A bar chart that transitions to new data!</title>
+		<script type="text/javascript" src="../d3.js"></script>
+		<style type="text/css">
+			h1 {
+				font-family: Optima, Futura, sans-serif;
+				font-weight: bold;
+				color: rgb(220,110,11);
+				}
+
+			.x_axis path,
+			.x_axis line {
+				stroke: maroon;
+				shape-rendering: crispEdges;
+				}
+			.x_axis text {
+				font-family: Optima, Futura, sans-serif;
+				font-weight: bold;
+				font-size: 14px;
+				fill: maroon;
+				}
+
+			.y_axis path,
+			.y_axis line {
+				stroke: maroon;
+				shape-rendering: crispEdges;
+				}
+			.y_axis text {
+				font-family: Optima, Futura, sans-serif;
+				font-weight: bold;
+				font-size: 14px;
+				fill: maroon;
+				}
+
+
+
+		</style>
+	</head>
+	<body>
+
+
+
+		<script type="text/javascript">
+
+			//Width and height
+			var w = 600;
+			var h = 250;
+
+			d3.select("body").append("h1")
+				.text("Actions");
+
+
+			d3.select("body").append("h3")
+				.text("Go with the mouse over the points");
+
+
+
+			var scatter_x = 50;
+			var scatter_y = 10;
+			var radius = 5;
+			var scatter_points = 1500;
+			var dist_for_scatter_label = 6; // as multiple of the radius
+
+
+
+
+
+            var points = []
+			for (var i=0; i<scatter_points; i++){
+                var x = Math.random()*scatter_x;
+                var y = Math.random()*scatter_y;
+                points.push([x, y]); // append new position
+                }
+
+
+
+
+			// introduce the variable again, this time as linear scale and not BAND
+			var xScale_scatter = d3.scaleLinear()
+					.domain([0, d3.max(points,function(d) { return d[0] } ) ] )
+					.range([dist_for_scatter_label*radius,w-dist_for_scatter_label*radius])
+
+
+			var yScale_scatter = d3.scaleLinear()
+					.domain([0, d3.max(points,function(d) { return d[1] } ) ] )
+					.range([h-dist_for_scatter_label*radius,dist_for_scatter_label*radius])
+
+
+			var scatterplot = d3.select("body")
+						.append("svg")
+						.attr("width", w)
+						.attr("height", h);
+
+
+			d3.select("body").append("p").text("Click here for projecting the points to 1D")
+					.attr("class","sort_points");
+
+
+            var sortPoints = function(){
+                    scatterplot.selectAll("circle")
+                            .sort(function(element1, element2){
+                                return d3.ascending(element1[0], element2[0]);
+                            })
+                            .transition()
+                            .duration(500)
+                            .attr("cx", function(d){
+                                return xScale_scatter(d[0]);
+                                })
+                            .attr("cy",h/2);
+                    };
+
+
+
+			scatterplot.selectAll("circle")
+			    .data(points)
+			    .enter()
+			    .append("circle")
+			    .attr("cx",function(d){
+			    	return xScale_scatter(d[0]);
+                    })
+			    .attr("cy",function(d){
+			    	return yScale_scatter(d[1]);
+			    	})
+			    .attr("r",function(d){
+			    	return Math.random()*radius;
+			    	})
+			    .style("fill",function(d){
+			    	if (d[0]>scatter_x){
+                        return d3.rgb(0,0,0);
+                        }
+			    	else{
+                        return d3.rgb((d[0]/scatter_x *255),d[1]/scatter_y*255,(d[0]/scatter_x+d[1]/scatter_y)*127);
+                        }
+			    	})
+			    .on("mouseover",function(){
+                        d3.select(this)
+                            .style("fill",d3.rgb(220,110,11));
+                        })
+
+
+                .on("mouseout", function(){
+                    d3.select(this)
+                        .transition()
+                        .duration(500)
+                        .style("fill",function(d){
+                            return d3.rgb((d[0]/scatter_x *255),d[1]/scatter_y*255,(d[0]/scatter_x+d[1]/scatter_y)*127);
+                            })
+                    });
+
+
+			d3.selectAll("p")
+                .on("click",function(){
+                	console.log("works");
+                    sortPoints();
+                    });
+
+			// add axis
+			var xAxis = d3.axisBottom()
+							.scale(xScale_scatter)
+							.ticks(6);
+
+			var yAxis = d3.axisLeft()
+							.scale(yScale_scatter)
+							.ticks(6);
+
+
+			scatterplot.append("g")   // add a new SVG  group
+				.attr("class","x_axis") // add them to a class, so that they are
+									  // easy to modify with css (in the head)
+				.call(xAxis)
+				.attr("transform", "translate(0,"  + (h-dist_for_scatter_label*radius) +  ")"); // shift axis to bottom
+
+			scatterplot.append("g")   // add a new SVG  group
+				.attr("class","y_axis") // add them to a class, so that they are
+									  // easy to modify with css (in the head)
+				.call(yAxis)
+				.attr("transform", "translate(" + (dist_for_scatter_label*radius) +  ",0)"); // shift axis to bottom
+
+
+
+		</script>
+	</body>
+</html>
