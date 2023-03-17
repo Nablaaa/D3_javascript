@@ -66,6 +66,7 @@ Scripts for D3.js (Data Driven Documents) to present scientific data online. Bas
 ### Adding mouse interaction
 - script 10
 - add effects on click and mouse hover
+- get position of the point by using select(this)
 - effects like changing color or sorting numbers (in scatterplot)
 
 

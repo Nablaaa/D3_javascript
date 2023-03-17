@@ -89,6 +89,17 @@
 					.range([h-dist_for_scatter_label*radius,dist_for_scatter_label*radius])
 
 
+			// introduce the variable again, this time as linear scale and not BAND
+			var xScale_inverse = d3.scaleLinear()
+					.range([0, d3.max(points,function(d) { return d[0] } ) ] )
+					.domain([dist_for_scatter_label*radius,w-dist_for_scatter_label*radius])
+
+
+			var yScale_inverse = d3.scaleLinear()
+					.range([0, d3.max(points,function(d) { return d[1] } ) ] )
+					.domain([h-dist_for_scatter_label*radius,dist_for_scatter_label*radius])
+
+
 			var scatterplot = d3.select("body")
 						.append("svg")
 						.attr("width", w)
@@ -140,6 +151,19 @@
                             .style("fill",d3.rgb(220,110,11));
                         })
 
+				.on("click",function(d){
+					var xpos = 0;
+					var ypos = 0;
+					xpos = d3.select(this).attr("cx");
+					ypos = d3.select(this).attr("cy");
+
+
+
+					scatterplot.append("text").text(function(){
+					   				return " " + Math.round(xScale_inverse(xpos)) + ", "  + Math.round(yScale_inverse(ypos)) + "" })
+							.attr("x",xpos).attr("y",ypos);
+
+					})
 
                 .on("mouseout", function(){
                     d3.select(this)
